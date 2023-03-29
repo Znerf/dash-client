@@ -2,7 +2,8 @@
 
 ##Deployed in 
 ```
-https://dash-client-eight.vercel.app/login
+[LINK](https://dash-client-eight.vercel.app/) 
+https://dash-client-eight.vercel.app/
 ```
 ## Project setup
 ```
