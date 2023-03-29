@@ -57,17 +57,35 @@
 </template>
 
 <script>
+
+import useValidate from '@vuelidate/core'
+import { required, minLength,email } from '@vuelidate/validators'
+
 export default {
   name: 'LoginComponent',
   methods: {
     submitForm() {
-      alert('Login Request successfully submitted')
+      this.v$.$validate() // checks all inputs
+      console.log(this.v$)
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        alert('Form successfully submitted.')
+      } else {
+        alert('All fields are required, email must be email, password must be atleast 6')
+      }
     },
   },
   data() {
     return {
+      v$: useValidate(),
       email: '',
       password:''
+    }
+  },
+  validations() {
+    return {
+      email: { required, email },
+      password: {required, minLength: minLength(6)},
     }
   },
 }
