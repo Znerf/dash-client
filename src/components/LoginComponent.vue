@@ -10,8 +10,8 @@
 
           <!-- Email input -->
           <div class="relative mb-6" data-te-input-wrapper-init>
-            <input  v-model="form.email" type="text" id="first_name" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Email" required>
-            <div v-if="this.v$.form.email.$error"  class="text-red-300 float-left">Email must be email type</div>
+            <input  v-model="form.username" type="text" id="first_name" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Username" required>
+            <div v-if="this.v$.form.username.$error"  class="text-red-300 float-left">username must be aleast 6 character</div>
           </div>
 
           <!-- Password input -->
@@ -55,7 +55,7 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import { required, minLength,email } from '@vuelidate/validators'
+import { required, minLength } from '@vuelidate/validators'
 import router from '@/router'
 
 export default {
@@ -66,13 +66,25 @@ export default {
 
       if (!this.v$.form.$error) {
         // if ANY fail validation
-        if (this.form.email=="sagar@test.com" && this.form.password=="secret"){
+        fetch('https://dummyjson.com/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: this.form.username,
+            password: this.form.password,
+          })
+        })
+        .then(res=>res.json())
+        .then(res =>{
+          localStorage.setItem("user",res)
+          localStorage.setItem("userId",res.id)
+          console.log(res)
           localStorage.setItem("token",true)
           router.push('/')
-          // alert('Welcome')
-        }else{
-          alert("Password email mismatch") 
-        }
+        } )
+        .catch(()=>{
+          alert("Password email mismatch")
+        });
 
       }
     },
@@ -81,7 +93,7 @@ export default {
     return {
       v$: useValidate(),
       form:{
-        email: '',
+        username: '',
         password:''
       }
     }
@@ -89,7 +101,7 @@ export default {
   validations() {
     return {
       form:{
-        email: { required, email },
+        username: { required, minLength: minLength(6) },
         password: {required, minLength: minLength(6)}
       },
     }
