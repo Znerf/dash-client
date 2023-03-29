@@ -10,12 +10,15 @@
 
           <!-- Email input -->
           <div class="relative mb-6" data-te-input-wrapper-init>
-            <input  v-model="email" type="text" id="first_name" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Email" required>
+            <input  v-model="form.email" type="text" id="first_name" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Email" required>
+            <div v-if="this.v$.form.email.$error"  class="text-red-300 float-left">Email must be email type</div>
           </div>
 
           <!-- Password input -->
           <div class="relative mb-6" data-te-input-wrapper-init>
-            <input  v-model="password" type="password" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Password" required>
+            <input  v-model="form.password" type="password" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Password" required>
+            <div v-if="this.v$.form.password.$error" class="text-red-300 float-left">Password must be of minLength 6</div>
+
           </div>
 
           <div class="mb-6 flex items-center justify-between">
@@ -42,12 +45,6 @@
               Don't have an account?
               <a href="#">Register</a>
             </p>
-            <!-- <p v-if="errors.length">
-              <b>Please correct the following error(s):</b>
-              <ul>
-                <li v-for="error in errors">{{ error }}</li>
-              </ul>
-            </p> -->
           </div>
         </form>
       </div>
@@ -57,37 +54,46 @@
 </template>
 
 <script>
-
 import useValidate from '@vuelidate/core'
 import { required, minLength,email } from '@vuelidate/validators'
+import router from '@/router'
 
 export default {
   name: 'LoginComponent',
   methods: {
     submitForm() {
       this.v$.$validate() // checks all inputs
-      console.log(this.v$)
-      if (!this.v$.$error) {
+
+      if (!this.v$.form.$error) {
         // if ANY fail validation
-        alert('Form successfully submitted.')
-      } else {
-        alert('All fields are required, email must be email, password must be atleast 6')
+        if (this.form.email=="sagar@test.com" && this.form.password=="secret"){
+          localStorage.setItem("token",true)
+          router.push('/')
+          // alert('Welcome')
+        }else{
+          alert("Password email mismatch") 
+        }
+
       }
     },
   },
   data() {
     return {
       v$: useValidate(),
-      email: '',
-      password:''
+      form:{
+        email: '',
+        password:''
+      }
     }
   },
   validations() {
     return {
-      email: { required, email },
-      password: {required, minLength: minLength(6)},
+      form:{
+        email: { required, email },
+        password: {required, minLength: minLength(6)}
+      },
     }
-  },
+  }
 }
 </script>
 
