@@ -76,6 +76,9 @@ export default {
         })
         .then(res=>res.json())
         .then(res =>{
+          if(!res.id){
+            throw new Error("err")
+          }
           localStorage.setItem("user",res)
           localStorage.setItem("userId",res.id)
           console.log(res)
