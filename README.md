@@ -1,5 +1,9 @@
 # dash-client
 
+##Deployed in 
+```
+https://dash-client-eight.vercel.app/login
+```
 ## Project setup
 ```
 npm install
